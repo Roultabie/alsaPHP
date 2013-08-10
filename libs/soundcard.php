@@ -21,7 +21,7 @@ class soundCard
         #
     }
 
-    public static function listCards()
+    public static function listSoundCards()
     {
         $commandResult = shell_exec('aplay -l');
         $wantedLines     = '/(\w+)\s(\d+):\s(\w+)\s\[([\w\d\s]+)\],\s(\w+)\s(\d+):\s([\w\d\s]+)\[([\w\d\s]+)\]/ui';
@@ -38,7 +38,7 @@ class soundCard
         return $cards;
     }
 
-    public static function listMixers($card)
+    public static function listSoundCardMixers($card)
     {
         $commandResult = shell_exec('amixer -c ' . (int) $card . ' scontrols');
         $wantedLines   = "/Simple mixer control '([\w\d\s-_\.]+)',\d+/ui";
@@ -50,7 +50,7 @@ class soundCard
         return $mixers;
     }
 
-    public static function listChannels($card, $mixer)
+    public static function listSoundCardChannels($card, $mixer)
     {
         $commandResult = shell_exec('amixer -c ' . (int) $card . ' sget ' . $mixer);
         $wantedLines   = '/(Playback|Capture) channels: (.*)/';
