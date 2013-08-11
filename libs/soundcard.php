@@ -67,10 +67,17 @@ class soundCard
         if (preg_match_all($wantedLines, $commandResult, $matches)) {
             $channels = explode(' - ', $matches[2][0]);
         }
-        elseif (preg_match($wantedItems, $commandResult, $items)) {
-            $channels = explode(' ', str_replace("'", "", $items[1]));
-        }
         return $channels;
+    }
+
+    public static function listSoundCardStates($card, $mixer)
+    {
+        $commandResult = shell_exec('amixer -c ' . (int) $card . ' sget "' . $mixer . '"');
+        $wantedLines   = "/\s+Items: ([\w\-_' ]+)/";
+        if (preg_match($wantedLines, $commandResult, $items)) {
+            $states = explode(' ', str_replace("'", "", $items[1]));
+        }
+        return $states;
     }
 
     private static function isInAudioGroup()
