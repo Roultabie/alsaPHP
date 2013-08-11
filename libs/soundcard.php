@@ -1,33 +1,9 @@
 <?php
 class soundCard
 {
-    function __construct()
+    function __construct($soundCardNumber)
     {
         #
-    }
-
-    public function getMixer()
-    {
-        return $this->mixer;
-    }
-
-    private function setMixer($mixer, $channel, $key = '') // $key if is mixer edition
-    {
-        if (empty($key)) {
-            if (is_array($channel)) {
-                $this->mixer[$mixer][] = $channel;
-            }
-        }
-        else {
-            $this->mixer[$mixer][$key] = $channel;
-        }
-    }
-
-    public function addChannel($mixer, $soundCard, $soundCardMixer, $soundCardChannel)
-    {
-        $elements = array('soundCard' => $soundCard, 'soundCardMixer' => $soundCardMixer, 'soundCardChannel' => $soundCardChannel);
-        $channel = $elements;
-        $this->setMixer($mixer, $channel);
     }
 
     public static function listSoundCards()
@@ -37,12 +13,13 @@ class soundCard
         preg_match_all($wantedLines, $commandResult, $matches);
         $nbCards = count($matches[0]);
         for ($i = 0; $i < $nbCards; $i++) {
-            $cards[$i]['card']       = $matches[2][$i];
-            $cards[$i]['cardType']   = $matches[3][$i];
-            $cards[$i]['cardName']   = $matches[4][$i];
-            $cards[$i]['device']     = $matches[6][$i];
-            $cards[$i]['deviceType'] = $matches[7][$i];
-            $cards[$i]['deviceName'] = $matches[8][$i];
+            $currentCard['soundCardNumber']     = $matches[2][$i];
+            $currentCard['soundCardType']       = $matches[3][$i];
+            $currentCard['soundCardName']       = $matches[4][$i];
+            $currentCard['soundCardDevice']     = $matches[6][$i];
+            $currentCard['soundCardDeviceType'] = $matches[7][$i];
+            $currentCard['soundCardDeviceName'] = $matches[8][$i];
+            $cards[$i] = (object) $currentCard;
         }
         return $cards;
     }
@@ -53,20 +30,45 @@ class soundCard
         $wantedLines   = "/Simple mixer control '([\w\d\s-_\.]+)',\d+/ui";
         preg_match_all($wantedLines, $commandResult, $matches);
         $nbMixers = count($matches[0]);
-        for ($i = 0; $i < $nbMixers; $i++) { 
-            $mixers[$i] = $matches[1][$i];
+        for ($i = 0; $i < $nbMixers; $i++) {
+            $currentMixer['mixerName'] = $matches[1][$i];
+
+            // Capabilities
+            $mixerCommand =shell_exec('amixer -c ' . (int) $card . ' sget "' . $matches[1][$i] . '"');
+            $capLine = "/\s+Capabilities: ([\w\-_ ]+)/";
+            preg_match($capLine, $mixerCommand, $capabilities);
+            if (!empty($capabilities[0])) {
+                $currentMixer['capabilities']  = explode(' ', $capabilities[1]);
+            }
+            else {
+                unset($currentMixer['capabilities']);
+            }
+
+            // Limits
+            $limLine = "/\s+Limits: [\w\-_ ]* (\d+ \- \d+)/";
+            preg_match($limLine, $mixerCommand, $limits);
+            if (!empty($limits[0])) {
+                $currentMixer['limits']  = explode(' - ', $limits[1]);
+            }
+            else {
+                unset($currentMixer['limits']);
+            }
+
+            
+            $mixers[$i] = (object) $currentMixer;
         }
         return $mixers;
     }
 
     public static function listSoundCardChannels($card, $mixer)
     {
-        $commandResult = shell_exec('amixer -c ' . (int) $card . ' sget ' . $mixer);
+        $commandResult = shell_exec('amixer -c ' . (int) $card . ' sget "' . $mixer . '"');
         $wantedLines   = '/(Playback|Capture) channels: (.*)/';
         preg_match_all($wantedLines, $commandResult, $matches);
         if (!empty($matches[2][0])) {
             $elements = explode(' - ', $matches[2][0]);
             foreach ($elements as $key => $value) {
+
                 $channels[$key] = $value;
             }
             return $channels;
