@@ -52,8 +52,6 @@ class soundCard
             else {
                 unset($currentMixer['limits']);
             }
-
-            
             $mixers[$i] = (object) $currentMixer;
         }
         return $mixers;
