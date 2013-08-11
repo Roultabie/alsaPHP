@@ -1,7 +1,7 @@
 <?php
 class soundCard
 {
-    function __construct($card = 0)
+    function __construct()
     {
         #
     }
@@ -11,14 +11,23 @@ class soundCard
         return $this->mixer;
     }
 
-    public function setMixer($mixer)
+    private function setMixer($mixer, $channel, $key = '') // $key if is mixer edition
     {
-        $this->mixer[$mixer] = '';
+        if (empty($key)) {
+            if (is_array($channel)) {
+                $this->mixer[$mixer][] = $channel;
+            }
+        }
+        else {
+            $this->mixer[$mixer][$key] = $channel;
+        }
     }
 
-    public function addChannel($mixer, $channel)
+    public function addChannel($mixer, $soundCard, $soundCardMixer, $soundCardChannel)
     {
-        #
+        $elements = array('soundCard' => $soundCard, 'soundCardMixer' => $soundCardMixer, 'soundCardChannel' => $soundCardChannel);
+        $channel = $elements;
+        $this->setMixer($mixer, $channel);
     }
 
     public static function listSoundCards()
