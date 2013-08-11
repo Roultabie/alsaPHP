@@ -1,7 +1,7 @@
 <?php
 class myMixers
 {
-    public function getMixer($mixer = '')
+    public function getMixer($mixer)
     {
         return $this->$mixer;
     }
@@ -25,9 +25,9 @@ class myMixers
         }
     }
 
-    public function addChannel($mixer, $soundCard, $soundCardMixer, $soundCardChannel)
+    public function addChannel($mixer, $soundCardNumber, $soundCardMixer, $soundCardChannel)
     {
-        $elements = array('soundCard' => $soundCard, 'soundCardMixer' => $soundCardMixer, 'soundCardChannel' => $soundCardChannel);
+        $elements = array('soundCardNumber' => $soundCardNumber, 'soundCardMixer' => $soundCardMixer, 'soundCardChannel' => $soundCardChannel);
         $this->setMixer($mixer, $elements);
     }
 }
