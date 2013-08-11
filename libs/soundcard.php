@@ -63,16 +63,21 @@ class soundCard
     public static function listSoundCardChannels($card, $mixer)
     {
         $commandResult = shell_exec('amixer -c ' . (int) $card . ' sget "' . $mixer . '"');
-        $wantedLines   = '/(Playback|Capture) channels: (.*)/';
+        $wantedLines   = '/\s+(Playback|Capture) channels: (.*)/';
+        $wantedItems   = "/\s+Items: ([\w\-_' ]+)/";
         preg_match_all($wantedLines, $commandResult, $matches);
+        print_r($items);
         if (!empty($matches[2][0])) {
             $elements = explode(' - ', $matches[2][0]);
             foreach ($elements as $key => $value) {
 
                 $channels[$key] = $value;
             }
-            return $channels;
         }
+        elseif (preg_match($wantedItems, $commandResult, $items)) {
+            $channels = explode(' ', str_replace("'", "", $items[1]));
+        }
+        return $channels;
     }
 
     private static function isInAudioGroup()
