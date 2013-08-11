@@ -33,12 +33,12 @@ class soundCard
         for ($i = 0; $i < $nbMixers; $i++) {
             $currentMixer['mixerName'] = $matches[1][$i];
 
+            $mixerCommand = shell_exec('amixer -c ' . (int) $card . ' sget "' . $matches[1][$i] . '"');
+
             // Capabilities
-            $mixerCommand =shell_exec('amixer -c ' . (int) $card . ' sget "' . $matches[1][$i] . '"');
             $capLine = "/\s+Capabilities: ([\w\-_ ]+)/";
-            preg_match($capLine, $mixerCommand, $capabilities);
-            if (!empty($capabilities[0])) {
-                $currentMixer['capabilities']  = explode(' ', $capabilities[1]);
+            if (preg_match($capLine, $mixerCommand, $capabilities)) {
+                $currentMixer['capabilities'] = explode(' ', $capabilities[1]);
             }
             else {
                 unset($currentMixer['capabilities']);
@@ -46,9 +46,8 @@ class soundCard
 
             // Limits
             $limLine = "/\s+Limits: [\w\-_ ]* (\d+ \- \d+)/";
-            preg_match($limLine, $mixerCommand, $limits);
-            if (!empty($limits[0])) {
-                $currentMixer['limits']  = explode(' - ', $limits[1]);
+            if (preg_match($limLine, $mixerCommand, $limits)) {
+                $currentMixer['limits'] = explode(' - ', $limits[1]);
             }
             else {
                 unset($currentMixer['limits']);
@@ -66,11 +65,7 @@ class soundCard
         $wantedLines   = '/\s+(Playback|Capture) channels: (.*)/';
         $wantedItems   = "/\s+Items: ([\w\-_' ]+)/";
         if (preg_match_all($wantedLines, $commandResult, $matches)) {
-            $elements = explode(' - ', $matches[2][0]);
-            foreach ($elements as $key => $value) {
-
-                $channels[$key] = $value;
-            }
+            $channels = explode(' - ', $matches[2][0]);
         }
         elseif (preg_match($wantedItems, $commandResult, $items)) {
             $channels = explode(' ', str_replace("'", "", $items[1]));
