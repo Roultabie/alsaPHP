@@ -9,7 +9,7 @@ class soundCard
     public static function listSoundCards()
     {
         $commandResult = shell_exec('aplay -l');
-        $wantedLines     = '/(\w+)\s(\d+):\s(\w+)\s\[([\w\d\s]+)\],\s(\w+)\s(\d+):\s([\w\d\s]+)\[([\w\d\s]+)\]/ui';
+        $wantedLines     = '/(\w+)\s(\d+):\s(\w+)\s\[([\w\d\s\.\-_]+)\],\s(\w+)\s(\d+):\s([\w\d\s]+)\[([\w\d\s]+)\]/ui';
         preg_match_all($wantedLines, $commandResult, $matches);
         $nbCards = count($matches[0]);
         for ($i = 0; $i < $nbCards; $i++) {
