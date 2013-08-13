@@ -61,7 +61,6 @@ class soundCard
     {
         $commandResult = shell_exec('amixer -c ' . (int) $card . ' sget "' . $mixer . '"');
         $wantedLines   = '/\s+(Playback|Capture) channels: (.*)/';
-        $wantedItems   = "/\s+Items: ([\w\-_' ]+)/";
         if (preg_match_all($wantedLines, $commandResult, $matches)) {
             $channels = explode(' - ', $matches[2][0]);
         }
