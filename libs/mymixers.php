@@ -15,10 +15,10 @@ extends soundCard
         return $this->$mixer;
     }
 
-    public function getMixers($mixers = '')
+    /*public function getMixers($mixers = '')
     {
 
-    }
+    }*/
 
     private function setMixer($mixer, $channel = '', $key = '') // $key if is mixer edition
     {
@@ -63,7 +63,7 @@ extends soundCard
 
     public static function setMyMixers($mixers)
     {
-        // ajouter le test d'existance des cards / mixers / channels
+        // ajouter le test d'existence des cards / mixers / channels
         self::$myMixers = $mixers;
     }
 
