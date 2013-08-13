@@ -1,12 +1,13 @@
 <?php
 class myMixers
+extends soundCard
 {
 
     private static $myMixers;
 
     function __construct()
     {
-        $this->arrayToObject($myMixers);
+        $this->arrayToObject();
     }
 
     public function getMixer($mixer)
@@ -46,8 +47,8 @@ class myMixers
 
     private function arrayToObject()
     {
-        if (is_array(self::$myMixers)) {
-            foreach (self::$myMixers as $mixerName => $mixers) {
+        if (is_array(self::getMyMixers())) {
+            foreach (self::getMyMixers() as $mixerName => $mixers) {
                 foreach ($mixers as $element) {
                     $this->addChannel($mixerName, $element['soundCardNumber'], $element['soundCardMixer'], $element['soundCardChannel']);
                 }
@@ -60,9 +61,20 @@ class myMixers
         return self::$myMixers;
     }
 
-    public static function setMyMixers($myMixers)
+    public static function setMyMixers($mixers)
     {
-        self::$myMixers = $myMixers;
+        // ajouter le test d'existance des cards / mixers / channels
+        self::$myMixers = $mixers;
+    }
+
+    public static function addMyMixer($mixerName, $soundCardNumber, $soundCardMixer, $soundCardChannel)
+    {
+        // V1
+        self::$myMixers[$mixerName][] = array('soundCardNumber' => $soundCardNumber, 'soundCardMixer' => $soundCardMixer, 'soundCardChannel' => $soundCardChannel);
+        // V2 quand sera ajouté le contrôle des éléments dans self::setMyMixers();
+        /*$mixers               = self::getMyMixers();
+        $mixers[$mixerName][] = array('soundCardNumber' => $soundCardNumber, 'soundCardMixer' => $soundCardMixer, 'soundCardChannel' => $soundCardChannel);
+        self::setMyMixers($mixers);*/
     }
 }
 ?>
