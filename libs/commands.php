@@ -32,7 +32,6 @@ extends soundCard
                 }
             }
             $commandLine = rtrim($commandLine, ',');
-            echo $commandLine;
         }
         $exec = 'sset "' . $mixer . '" ' . $commandLine;
         $execResult = $this->amixer($exec);
@@ -63,7 +62,6 @@ extends soundCard
                 }
             }
             $commandLine = rtrim($commandLine, ',');
-            echo $commandLine;
         }
         $exec = 'sset "' . $mixer . '" ' . $commandLine;
         $execResult = $this->amixer($exec);
@@ -94,7 +92,6 @@ extends soundCard
                 }
             }
             $commandLine = rtrim($commandLine, ',');
-            echo $commandLine;
         }
         $exec = 'sset "' . $mixer . '" ' . $commandLine;
         $execResult = $this->amixer($exec);
