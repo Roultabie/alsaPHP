@@ -72,6 +72,47 @@ class soundCard
         return $states;
     }
 
+    protected static function ifElementExist($card, $type, $element, $mixer = '')
+    {
+        if ($type === 'soundCard' || $type === 'mixer') {
+            if ($type === 'soundCard') {
+                $elements = self::listSoundCards();
+                $required = 'soundCard';
+            }
+            else {
+                $elements = self::listSoundCardMixers($card);
+                $required = 'mixerName';
+            }
+            if (is_array($elements)) {
+                foreach ($elements as $key => $objects) {
+                    if ($objects->$required === $element) {
+                        $result = TRUE;
+                    }
+                    else {
+                        $result = FALSE;
+                    }
+                }
+            }
+        }
+        else {
+            if ($type === 'channel') {
+                $elements = self::listSoundCardChannels($card, $mixer);
+            }
+            else {
+                $elements = self::listSoundCardStates($card, $mixer);
+            }
+            foreach ($elements as $key => $value) {
+                if ($value === $element) {
+                    $result = TRUE;
+                }
+                else {
+                    $result = FALSE;
+                }
+            }
+        }
+        return $result;
+    }
+
     private static function isInAudioGroup()
     {
         $httpUser = shell_exec('whoami');
