@@ -13,9 +13,11 @@ extends soundCard
         $exec       = 'sget "' . $mixer . '"';
         $execResult = $this->amixer($exec);
         $channels   = self::listSoundCardChannels($this->soundCard, $mixer);
-        $channels   = implode('|', $channels);
-        $pattern    ='/\s+([' . $channels . ']+):[\w\d\s]*\[(\d+)%\]/';
-        preg_match_all($pattern, $execResult, $matches);
+        if (is_array($channels)) {
+            $channels   = implode('|', $channels);
+            $pattern    ='/\s+([' . $channels . ']+):[\w\d\s]*\[(\d+)%\]/';
+            preg_match_all($pattern, $execResult, $matches);
+        }
         $result['mixer'] = $mixer;
         if (is_array($matches[1])) {
             foreach ($matches[1] as $key => $value) {
@@ -43,9 +45,11 @@ extends soundCard
         $exec       = 'sget "' . $mixer . '"';
         $execResult = $this->amixer($exec);
         $channels   = self::listSoundCardChannels($this->soundCard, $mixer);
-        $channels   = implode('|', $channels);
-        $pattern    ='/\s+([' . $channels . ']+):[\w\d\s]*\[(\d+)%\]/';
-        preg_match_all($pattern, $execResult, $matches);
+        if (is_array($channels)) {
+            $channels = implode('|', $channels);
+            $pattern    ='/\s+([' . $channels . ']+):[\w\d\s]*\[(\d+)%\]/';
+            preg_match_all($pattern, $execResult, $matches);
+        }
         $result['mixer'] = $mixer;
         if (is_array($matches[1])) {
             foreach ($matches[1] as $key => $value) {
@@ -68,14 +72,16 @@ extends soundCard
         return $execResult;
     }
 
-    public function setVolume($volume, $mixer, $channel = '')
+    public function setVolume($volume, $mixer, $channel)
     {
         $exec       = 'sget "' . $mixer . '"';
         $execResult = $this->amixer($exec);
         $channels   = self::listSoundCardChannels($this->soundCard, $mixer);
-        $channels   = implode('|', $channels);
-        $pattern    ='/\s+([' . $channels . ']+):[\w\d\s]*\[(\d+)%\]/';
-        preg_match_all($pattern, $execResult, $matches);
+        if (is_array($channels)) {
+            $channels = implode('|', $channels);
+            $pattern    ='/\s+([' . $channels . ']+):[\w\d\s]*\[(\d+)%\]/';
+            preg_match_all($pattern, $execResult, $matches);
+        }
         $result['mixer'] = $mixer;
         if (is_array($matches[1])) {
             foreach ($matches[1] as $key => $value) {
@@ -108,9 +114,11 @@ extends soundCard
         }
         $execResult = $this->amixer($exec);
         $channels   = self::listSoundCardChannels($this->soundCard, $mixer);
-        $channels   = implode('|', $channels);
-        $pattern    ='/\s+([' . $channels. ']+):.*\[([on|off]+)\]/';
-        preg_match_all($pattern, $execResult, $matches);
+        if (is_array($channels)) {
+            $channels = implode('|', $channels);
+            $pattern    ='/\s+([' . $channels. ']+):.*\[([on|off]+)\]/';
+            preg_match_all($pattern, $execResult, $matches);
+        }
         $result['mixer'] = $mixer;
         if (is_array($matches[1])) {
             foreach ($matches[1] as $key => $value) {
