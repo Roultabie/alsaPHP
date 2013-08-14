@@ -7,12 +7,17 @@ extends soundCard
         $this->soundCard = (int) $soundCardNumber;
     }
 
-    public function toggle($mixer)
+    public function toggle($mixer, $exec = TRUE)
     {
+        if ($exec) {
+            $exec = 'sset "' . $mixer . '" toggle';
+        }
+        else {
+            $exec = 'sget "' . $mixer . '"';
+        }
+        $execResult = $this->amixer($exec);
         $channels   = self::listSoundCardChannels($this->soundCard, $mixer);
         $channels   = implode('|', $channels);
-        $exec       = 'sset "' . $mixer . '" toggle';
-        $execResult = $this->amixer($exec);
         $pattern    ='/\s+([' . $channels. ']+):.*\[([on|off]+)\]/';
         preg_match_all($pattern, $execResult, $matches);
         $result['mixer'] = $mixer;
