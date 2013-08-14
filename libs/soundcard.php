@@ -1,11 +1,6 @@
 <?php
 class soundCard
 {
-    function __construct($soundCardNumber)
-    {
-        #
-    }
-
     public static function listSoundCards()
     {
         $commandResult = shell_exec('aplay -l');
