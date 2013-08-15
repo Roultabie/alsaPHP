@@ -109,6 +109,20 @@ extends soundCard
         $exec = '';
     }
 
+    public function mute($mixer, $channel = '')
+    {
+        $exec = 'sset "' . $mixer . '" mute';
+        $execResult = $this->amixer($exec);
+        return $execResult;
+    }
+
+    public function unmute($mixer, $channel = '')
+    {
+        $exec = 'sset "' . $mixer . '" unmute';
+        $execResult = $this->amixer($exec);
+        return $execResult;
+    }
+
     public function toggle($mixer, $exec = TRUE)
     {
         if ($exec) {
