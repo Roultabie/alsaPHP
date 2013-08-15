@@ -72,7 +72,7 @@ extends soundCard
         return $execResult;
     }
 
-    public function setVolume($volume, $mixer, $channel)
+    public function setVolume($volume, $mixer, $channel = '')
     {
         $exec       = 'sget "' . $mixer . '"';
         $execResult = $this->amixer($exec);
@@ -104,6 +104,11 @@ extends soundCard
         return $execResult;
     }
 
+    public function getVolume($mixer, $channel)
+    {
+        $exec = '';
+    }
+
     public function toggle($mixer, $exec = TRUE)
     {
         if ($exec) {
@@ -116,8 +121,9 @@ extends soundCard
         $channels   = self::listSoundCardChannels($this->soundCard, $mixer);
         if (is_array($channels)) {
             $channels = implode('|', $channels);
-            $pattern    ='/\s+([' . $channels. ']+):.*\[([on|off]+)\]/';
+            $pattern    ='/\s+([' . $channels. ']+):[\w\d\s]*\[\d+%\]\s[[\d\-\.db]+\]\s\[([on|off]+)\]/i';
             preg_match_all($pattern, $execResult, $matches);
+            print_r($matches);
         }
         $result['mixer'] = $mixer;
         if (is_array($matches[1])) {
