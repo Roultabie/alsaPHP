@@ -109,18 +109,49 @@ extends soundCard
         $exec = '';
     }
 
-    public function mute($mixer, $channel = '')
+    public function mute($mixer)
     {
         $exec = 'sset "' . $mixer . '" mute';
         $execResult = $this->amixer($exec);
-        return $execResult;
+        $channels   = self::listSoundCardChannels($this->soundCard, $mixer);
+        if (is_array($channels)) {
+            $channels = implode('|', $channels);
+            $pattern    ='/\s+([' . $channels. ']+):[\w\d\s]*\[\d+%\]\s[[\d\-\.db]+\]\s\[([on|off]+)\]/i';
+            preg_match_all($pattern, $execResult, $matches);
+        }
+        $result['mixer'] = $mixer;
+        if (is_array($matches[1])) {
+            foreach ($matches[1] as $key => $value) {
+                $result[$value] = $matches[2][$key];
+            }
+        }
+        else {
+            $result['error'] = '';
+        }
+        return $result;
+
     }
 
-    public function unmute($mixer, $channel = '')
+    public function unmute($mixer)
     {
         $exec = 'sset "' . $mixer . '" unmute';
         $execResult = $this->amixer($exec);
-        return $execResult;
+        $channels   = self::listSoundCardChannels($this->soundCard, $mixer);
+        if (is_array($channels)) {
+            $channels = implode('|', $channels);
+            $pattern    ='/\s+([' . $channels. ']+):[\w\d\s]*\[\d+%\]\s[[\d\-\.db]+\]\s\[([on|off]+)\]/i';
+            preg_match_all($pattern, $execResult, $matches);
+        }
+        $result['mixer'] = $mixer;
+        if (is_array($matches[1])) {
+            foreach ($matches[1] as $key => $value) {
+                $result[$value] = $matches[2][$key];
+            }
+        }
+        else {
+            $result['error'] = '';
+        }
+        return $result;
     }
 
     public function toggle($mixer, $exec = TRUE)
