@@ -123,7 +123,6 @@ extends soundCard
             $channels = implode('|', $channels);
             $pattern    ='/\s+([' . $channels. ']+):[\w\d\s]*\[\d+%\]\s[[\d\-\.db]+\]\s\[([on|off]+)\]/i';
             preg_match_all($pattern, $execResult, $matches);
-            print_r($matches);
         }
         $result['mixer'] = $mixer;
         if (is_array($matches[1])) {
